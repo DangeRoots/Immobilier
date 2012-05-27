@@ -231,6 +231,13 @@ void DialogAccueil::nouveauSouhait(int indexClient)
 
 void DialogAccueil::gestionAgents()
 {
+//    QString requete = "SELECT * FROM agents INNER JOIN clients On agents.num_a = clients.num_a ORDER BY agents.num_a";
+//    m_db = new BDD();
+//    il (m_db->ouvrir())
+//    {
+
+//    }
+
     QString requete = "SELECT * FROM agents INNER JOIN clients On agents.num_a = clients.num_a ORDER BY agents.num_a";
     m_db = new BDD();
     if (m_db->ouvrir())
@@ -264,6 +271,7 @@ void DialogAccueil::gestionAgents()
                         Agent *agent = new Agent(resultat.value(0).toInt(), resultat.value(1).toString());
                         this->m_listeAgents.append(agent);
                         agentUi->setNom(agent->getNom());
+
 
 
                         ui->tableWidget_resultats->setColumnWidth(0,ui->tableWidget_resultats->width()-15);

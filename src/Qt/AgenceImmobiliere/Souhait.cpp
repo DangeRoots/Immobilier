@@ -119,7 +119,7 @@ bool Souhait::sauvegarderVillesSouhaitees(int numS, int numV)
         {
             QSqlQuery requeteVillesSouhaitees(m_db->getDb());
 
-            requeteVillesSouhaitees.prepare("INSERT INTO villes_souhaitees VALUES(:num_v,:num_s");
+            requeteVillesSouhaitees.prepare("INSERT INTO villes_souhaitees VALUES(:num_v,:num_s)");
             requeteVillesSouhaitees.bindValue(":num_s",numS);
             requeteVillesSouhaitees.bindValue(":num_v", numV);
 
