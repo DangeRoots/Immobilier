@@ -128,7 +128,6 @@ bool Souhait::sauvegarderVillesSouhaitees(int numS, int numV)
             else
                 res = false;
         }
-
-    return res;
     m_db->close();
+    return res;
 }

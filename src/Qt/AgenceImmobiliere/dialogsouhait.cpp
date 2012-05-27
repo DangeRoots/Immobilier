@@ -82,7 +82,6 @@ void DialogSouhait::fermer()
     {
         this->close();
     }
-
 }
 
 void DialogSouhait::valider()
@@ -104,6 +103,16 @@ void DialogSouhait::valider()
         }
     }
     // Sauvegarder le souhait
+
+    // sauvegarder le souhait
+        // connaitre la liste des souhaits existants pour ce client
+        // Ouvrir une transaction
+            // Sauvegarder le souhait
+            // Récupérer la nouvelle liste des souhaits pour ce client
+            // Comparer les deux listes de souhaits pour identifier le numéro du nouveau souhait
+            // insérer les villes dans villes_souhaitees avec le nouveau numéro
+        // Fermer la transaction : Commit / Rollback
+
     if (m_souhait->sauvegarderSouhait())
     {
 //-------------------------------------------------
@@ -143,6 +152,7 @@ void DialogSouhait::valider()
         {
             QMessageBox::critical(this,"Sauvegarde impossible","Le souhait n'a pas été sauvegardé. Vérifiez vos données !");
         }
+        m_db->close();
     }
 }
 
