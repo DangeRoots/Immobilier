@@ -31,11 +31,16 @@ private:
     Client *m_client;
     DialogSouhait *m_dialogSouhait;
     BDD *m_db;
+    Souhait *m_souhaitCourant;
+    QList<Souhait *> m_listeSouhaits;
+    QList<Ville *> m_listeVilles;
 
     void chercherSouhait();
+//   void creationWidget( QSqlQuery requete, int ligne);
 
 public slots:
     void nouveauSouhait();
+    void ouvrirSouhait(int);
 };
 
 #endif // DIALOGLISTESOUHAIT_H

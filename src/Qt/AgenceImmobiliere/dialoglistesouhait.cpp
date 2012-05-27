@@ -51,7 +51,7 @@ void DialogListeSouhait::chercherSouhait()
     if (m_db->ouvrir())
     {
         QSqlQuery requete(m_db->getDb());
-        requete.prepare("SELECT souhaits.num_s, souhaits.num_c, souhaits.budget_max_s, souhaits.surface_hab_min_s, souhaits.surface_jardin_min_s, villes.nom_v, villes.num_v, villes.code_postal_v, clients.nom_c FROM souhaits INNER JOIN clients ON souhaits.num_c = clients.num_c INNER JOIN villes_souhaitees ON souhaits.num_s = villes_souhaitees.num_s INNER JOIN villes ON villes_souhaitees.num_v = villes.num_v Where clients.num_c =:numClient");
+        requete.prepare("SELECT souhaits.num_s, souhaits.num_c, souhaits.budget_max_s, souhaits.surface_hab_min_s, souhaits.surface_jardin_min_s, villes.nom_v, villes.num_v, villes.code_postal_v, clients.nom_c FROM souhaits INNER JOIN clients ON souhaits.num_c = clients.num_c INNER JOIN villes_souhaitees ON souhaits.num_s = villes_souhaitees.num_s INNER JOIN villes ON villes_souhaitees.num_v = villes.num_v Where clients.num_c =:numClient Order by souhaits.num_s");
 
         requete.bindValue(":numClient", QString::number(m_client->getNum()));
         if (requete.exec())
@@ -60,40 +60,92 @@ void DialogListeSouhait::chercherSouhait()
                 QMessageBox::information(this,"Recherche client", "Aucun souhait trouvé");
             else
             {
-                //Initialisations
-                ui->tableWidget_listeSouhaits->setRowCount(requete.size());
-                int ligne = 0;
+
                 while (requete.next())
                 {
-                    WidgetSouhait *souhaitUi = new WidgetSouhait();
-                    Ville *ville = new Ville(requete.value(6).toInt(),requete.value(5).toString(),requete.value(7).toString());
-                    Souhait *souhait = new Souhait(requete.value(2).toInt(), requete.value(3).toInt(), requete.value(4).toInt(), ville, m_client);
-                    souhaitUi->setBudgetMax(souhait->getBudget());
-                    souhaitUi->setSurfaceHabitableSouhaitee(souhait->getSurfaceHabitable());
-                    souhaitUi->setSurfaceJardinSouhaitee(souhait->getSurfaceJardin());
+                    if (m_listeSouhaits.size() > 0)
+                    {
+                        for (int i =0; i< m_listeSouhaits.size(); i++)
+                        {
+                            // Si je suis sur le même souhait
+                            if(m_listeSouhaits[i]->getNum() == requete.value(0).toInt())
+                            {
+                                foreach (Ville *v, m_listeSouhaits[i]->getVilles())
+                                {
+                                    if (v->getNum() != requete.value(6).toInt())
+                                    {
+                                        Ville *ville = new Ville(requete.value(6).toInt(),requete.value(5).toString(),requete.value(7).toString());
+                                        m_listeSouhaits[i]->modifierVilles(ville);
+                                    }
 
-//                    int largeur = ui->tableWidget_listeSouhaits->width();
-//                    souhaitUi->setMinimumWidth(largeur);
+                                }
 
-                    ui->tableWidget_listeSouhaits->setColumnWidth(0,souhaitUi->width());
-                    ui->tableWidget_listeSouhaits->setRowHeight(ligne,souhaitUi->height());
-                    ui->tableWidget_listeSouhaits->setCellWidget(ligne,0,souhaitUi);
-                    //ui->tableWidget_listeSouhaits->setAlternatingRowColors(true);
-                    //ui->tableWidget_listeSouhaits->setStyleSheet("alternate-background-color: yellow;background-color: gray;");
+                            }
+                            else
+                            {
+                                QList<Ville *> m_listeVilles;
+                                Ville *ville = new Ville(requete.value(6).toInt(),requete.value(5).toString(),requete.value(7).toString());
+                                m_listeVilles.append(ville);
+                                Souhait *souhait = new Souhait(requete.value(0).toInt(), requete.value(2).toInt(), requete.value(3).toInt(), requete.value(4).toInt()
+                                                               ,m_listeVilles, m_client);
+                                this->m_listeSouhaits.append(souhait);
 
-                    ligne++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        QList<Ville *> m_listeVilles;
+                        Ville *ville = new Ville(requete.value(6).toInt(),requete.value(5).toString(),requete.value(7).toString());
+                        m_listeVilles.append(ville);
+                        Souhait *souhait = new Souhait(requete.value(0).toInt(), requete.value(2).toInt(), requete.value(3).toInt(), requete.value(4).toInt()
+                                                       ,m_listeVilles, m_client);
+                        this->m_listeSouhaits.append(souhait);
 
+                    }
                 }
             }
         }
         m_db->close();
     }
+
+    // création des widgets
+    int ligne = 0;
+    ui->tableWidget_listeSouhaits->setRowCount(m_listeSouhaits.size());
+    for (int i=0; i < m_listeSouhaits.size(); i++)
+    {
+        WidgetSouhait *souhaitUi = new WidgetSouhait(m_listeSouhaits[i]);
+        souhaitUi->setBudgetMax(m_listeSouhaits[i]->getBudget());
+        souhaitUi->setSurfaceHabitableSouhaitee(m_listeSouhaits[i]->getSurfaceHabitable());
+        souhaitUi->setSurfaceJardinSouhaitee(m_listeSouhaits[i]->getSurfaceJardin());
+
+        ui->tableWidget_listeSouhaits->setColumnWidth(0,souhaitUi->width());
+        ui->tableWidget_listeSouhaits->setRowHeight(ligne,souhaitUi->height());
+        ui->tableWidget_listeSouhaits->setCellWidget(ligne,0,souhaitUi);
+
+        QSignalMapper *mapper = new QSignalMapper(this);
+        QObject::connect(souhaitUi->getBoutonDialogSouhait(),SIGNAL(clicked()),mapper,SLOT(map()));
+        mapper->setMapping(souhaitUi->getBoutonDialogSouhait(),this->m_listeSouhaits.indexOf(m_listeSouhaits[i]));
+        connect(mapper,SIGNAL(mapped(int)),this,SLOT(ouvrirSouhait(int)));
+
+        ligne++;
+
+
+    }
 }
 
 void DialogListeSouhait::nouveauSouhait()
 {
-    Ville *newVille = new Ville();
-    Souhait *newSouhait = new Souhait(0,0,0,newVille,m_client);
+    QList<Ville *> listeVilles;
+    Souhait *newSouhait = new Souhait(0,0,0,0, listeVilles,m_client);
     m_dialogSouhait = new DialogSouhait(newSouhait, this);
     m_dialogSouhait->exec();
+}
+
+void DialogListeSouhait::ouvrirSouhait(int indexSouhait)
+{
+    m_souhaitCourant = this->m_listeSouhaits[indexSouhait];
+    this->m_dialogSouhait = new DialogSouhait(m_souhaitCourant);
+    m_dialogSouhait->exec();
+
 }
