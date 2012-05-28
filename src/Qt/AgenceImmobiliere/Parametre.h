@@ -15,7 +15,6 @@
 class Parametre
 {
 public:
-    // Chargement des paramètres de l'application dans un fichier XML
     /*!
       \brief    Constructeur par défaut
       Permet d'obtenir les paramètres de la connexion en lisant un fichier XML

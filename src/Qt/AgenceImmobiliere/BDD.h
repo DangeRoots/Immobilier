@@ -8,7 +8,6 @@
   \version 1.0
   */
 
-
 #include <QtSql>
 #include "Parametre.h"
 
