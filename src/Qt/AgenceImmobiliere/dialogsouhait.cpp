@@ -86,6 +86,11 @@ void DialogSouhait::fermer()
 
 void DialogSouhait::valider()
 {
+    // To remove a database connection, first close the database using QSqlDatabase::close(),
+    // then remove it using the static method QSqlDatabase::removeDatabase().
+    // Savoir si la base supporte les transactions:
+    // QSqlDriver::hasFeature(QSqlDriver::Transactions) will return true
+
     // Vérifier les données
     if (checkData())
     {
@@ -101,12 +106,57 @@ void DialogSouhait::valider()
         {
             m_souhait->modifierVilles(v);
         }
-    }
-    // Sauvegarder le souhait
+    } // a la sortie de cette boucle, mon souhait est construit !
+
+//    QSqlDatabase::database().transaction();
+//    QSqlQuery query;
+//    query.exec("SELECT id FROM employee WHERE name = 'Torild Halvorsen'");
+//    if (query.next()) {
+//        int employeeId = query.value(0).toInt();
+//        query.exec("INSERT INTO project (id, name, ownerid) "
+//                   "VALUES (201, 'Manhattan Project', "
+//                   + QString::number(employeeId) + ')');
+//    }
+//    QSqlDatabase::database().commit();
+
 
     // sauvegarder le souhait
-        // connaitre la liste des souhaits existants pour ce client
-        // Ouvrir une transaction
+
+    // connaitre la liste des souhaits existants pour ce client
+    m_db = new BDD();
+    if (m_db->ouvrir())
+    {
+        // Requete qui recupere juste le num du souhait correspondant au client
+        QSqlQuery requeteListeSouhait(m_db->getDb());
+        requeteListeSouhait.prepare("Select souhaits.num_s, souhaits.num_c FROM souhaits Where souhaits.num_c=:numClient Order by souhaits.num_s");
+        requeteListeSouhait.bindValue(":numClient", m_souhait->getClient()->getNum());
+        if (requeteListeSouhait.exec())
+        {
+            if (requeteListeSouhait.size() < 1)
+            {
+                // Ce client n'a pas de souhait
+            }
+            else // la requete me ramene le(s) numéro(s) de souhait existant(s) dans la BDD
+            {
+                // Ranger ces numéros dans ma liste de numéros de souhait
+                // pour pouvoir comparer
+                for (int i = 0; i< requeteListeSouhait.size(); i++)
+                {
+                    while(requeteListeSouhait.next())
+                    {
+                        m_listeNumeroSouhaits[i] = requeteListeSouhait.value(0).toInt();
+                    }
+
+                }
+            }
+
+        }
+
+        // Fermer la connexion
+        m_db->close();
+    } // Ici, si client avait des souhaits, listeNuméroSouhaits contient les numéros des souhaits récupérés
+
+    // Ouvrir une transaction
             // Sauvegarder le souhait
             // Récupérer la nouvelle liste des souhaits pour ce client
             // Comparer les deux listes de souhaits pour identifier le numéro du nouveau souhait

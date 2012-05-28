@@ -26,6 +26,7 @@ private:
     Ui::barreMenuFiche m_menu;
     Souhait *m_souhait;
     QList<Ville *> m_listeVilles;
+    QList<qint16> m_listeNumeroSouhaits;
     BDD *m_db;
 
     bool checkData();
