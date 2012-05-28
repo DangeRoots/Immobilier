@@ -45,6 +45,7 @@ DialogListeBiens::DialogListeBiens(Client *client, QWidget *parent) :
 
 DialogListeBiens::~DialogListeBiens()
 {
+    delete m_db;
     delete ui;
 }
 

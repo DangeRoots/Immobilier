@@ -13,6 +13,14 @@
   \version 1.0
   */
 
+/*!
+ * \class Client
+ * \brief Cette classe décrit le client qu'il soit acheteur ou vendeur
+ * 
+ * Le client est l'objet central du logiciel. Sans client, il est impossible de faire 
+ * quelque action que ce soit. La classe Client permet de le représenter et de l'instancier, 
+ * mais aussi de le sauvegarder dans la base.
+ */
 class Client : public QObject
 {
 
@@ -34,7 +42,8 @@ public:
     ~Client ();
 
     /*!
-      \brief    Modifier l'adresse
+      * \brief    Modifier l'adresse
+      * 
       Permet de modifier l'adresse
       \param [in]   adr QString, la nouvelle adresse
       \return   void
@@ -42,7 +51,8 @@ public:
     void setAdresse (QString adr);
 
     /*!
-      \brief    Modifier le téléphone
+      * \brief    Modifier le téléphone
+      * 
       Permet de modifier le téléphone
       \param [in]   tel QString, le nouveau téléphone
       \return   void
@@ -51,6 +61,7 @@ public:
 
     /*!
       \brief    Modifier le nom
+      
       Permet de modifier le nom
       \param [in]   nom QString, le nouveau nom
       \return   void
@@ -59,6 +70,7 @@ public:
 
     /*!
       \brief    Modifier la ville
+      
       Permet de modifier la ville
       \param [in,out]   ville Ville *, la nouvelle ville
       \return   void
@@ -67,6 +79,7 @@ public:
 
     /*!
       \brief    Modifier le numéro d'agent
+      
       Permet de modifier le numéro d'agent
       \param [in]   num int, le nouveau numéro
       \return   void
@@ -75,6 +88,7 @@ public:
 
     /*!
       \brief    Obtenir le numéro client
+      
       Permet d'obtenir le numéro du client
       \return   int le numéro du client
       */
@@ -82,6 +96,7 @@ public:
 
     /*!
       \brief    Obtenir le numéro d'agent
+      
       Permet d'obtenir le numéro de l'agent affecté au client
       \return   int le numéro de l'agent
       */
@@ -89,6 +104,7 @@ public:
 
     /*!
       \brief    Obtenir le nom
+      
       Permet d'obtenir le nom du client
       \return   QString le nom du client
       */
@@ -96,6 +112,7 @@ public:
 
     /*!
       \brief    Obtenir l'adresse
+      
       Permet d'obtenir l'adresse du client
       \return   QString l'adresse du client
       */
@@ -103,6 +120,7 @@ public:
 
     /*!
       \brief    Obtenir le téléphone
+      
       Permet d'obtenir le téléphone du client
       \return   QString le téléphone du client
       */
@@ -110,6 +128,7 @@ public:
 
     /*!
       \brief    Obtenir la ville
+      
       Permet d'obtenir la ville du client
       \return   Ville*  la ville du client
       */
@@ -117,6 +136,7 @@ public:
 
     /*!
       \brief    Sauvegarder le client
+      
       Permet de sauvegarder le client dans la base de données. Si le client n'existe pas dans la base, il est alors créé.
       \return   bool    vrai si la sauvegarde s'est correctement déroulée
       */

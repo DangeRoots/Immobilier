@@ -21,7 +21,7 @@ BDD::BDD()
 
 BDD::~BDD()
 {
-    // delete m_settings;
+    delete m_settings;
     QSqlDatabase::removeDatabase("immo");
 }
 

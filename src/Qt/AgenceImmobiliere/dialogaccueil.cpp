@@ -21,9 +21,6 @@ DialogAccueil::DialogAccueil(QWidget *parent) :
     // Masquage du 3e bouton de la barre de menu
     // Edit demasquage pour test Agent
     m_menu.pushButton_3->setVisible(false);
-//    m_menu.pushButton_3->setIcon(QIcon(":/app/personnes"));
-//    m_menu.pushButton_3->setToolTip("Gestion des Agents");
-
     // Bouton de reset
     m_menu.pushButton_1->setIcon(QIcon(":/app/rafraichir96"));
     m_menu.pushButton_1->setToolTip("Reset");
